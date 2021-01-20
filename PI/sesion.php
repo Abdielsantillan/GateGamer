@@ -21,19 +21,19 @@
     $sql ="SELECT 
                     archivos.id_archivos as idArchivo,
                     usuario.usuario as nombrUsuario,
-                    
-                    categorias.nombre as categoria,
                     archivos.nombre as nombraArchivo,
                     archivos.tipo as tipoArchivo,
                     archivos.ruta as rutaArchivo,
-                    archivos.fecha as fecha
+                    archivos.fecha as fecha,
+                    portada.ruta as portada1
                 FROM
                     t_archivos AS archivos
                         INNER JOIN
                     user AS usuario ON archivos.id_usuario = usuario.id_usuario
                         INNER JOIN
-                    t_categorias AS categorias ON archivos.id_categoria = categorias.id_categoria
-                    and archivos.id_usuario ='$idUsuario' ";
+                    t_portada AS portada
+                  "
+                    ;
     $result = mysqli_query($conexion,$sql);
 ?>
 
@@ -52,37 +52,42 @@
       </p>
     </div>
   </section>
-  <?php
-      while($mostrar = mysqli_fetch_array($result)){
-        $rutaDescarga = "archivo/".$idUsuario."/".$mostrar['nombraArchivo'];
-        $nombreArchivo = $mostrar['nombraArchivo'];
-        $idArchivo = $mostrar['idArchivo'];
-    
-    ?>
-    <div class="container">
+<section>
+  <div class="container">
     <div class="row">
-        <div class="col align-self-center">
-          <div class="card mb-2 shadow-sm">
-              <img width="100%" src="images/genshin-impact-gameplay.jpg"  >
+    <?php
+        while($mostrar = mysqli_fetch_array($result)){
+              $idArchivo = $mostrar['idArchivo']; 
+              $portada = $mostrar['portada1'];
+              ?>
+              
+      <div class="col-4">
+      <img src="<?php echo $portada ?>" width="100%" height="225">
+        <div class="card shadow-sm">
+            
             <div class="card-body">
-                <p class="card-text"><?php echo $mostrar['nombraArchivo']; ?></p>
+            <p class="card-text"><?php echo $mostrar['nombraArchivo']; ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                <span class="btn btn-primary btn-sm " data-toggle="modal" data-target="#vizualizarArchivo" onclick="obteneraArchivoporId('<?php echo $idArchivo ?>')">
-                      <span class="fas fa-eye"> View </span>
+                  <span class="btn btn-primary btn-sm " data-toggle="modal" data-target="#vizualizarArchivo" 
+                    onclick="allArchivos('<?php echo $idArchivo ?>')">
+                    <span class="fas fa-eye"> View </span>
                   </span>
                 </div>
+              <small class="text-muted"><?php echo $mostrar['fecha']?></small>
               </div>
             </div>
-          </div>
         </div>
+      </div>
+      <?php
+        }
+      ?>
     </div>
-
-    <?php
-      }
-    ?>
+  </div>
+</section>
     <!-- Modal visualizar archivos-->
-<div class="modal fade" id="vizualizarArchivo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="vizualizarArchivo" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -96,11 +101,11 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
       </div>
     </div>
   </div>
 </div>
+
 </main>
 <script src="js/gestor.js"></script>
 <footer class="text-muted">
